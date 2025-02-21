@@ -35,7 +35,6 @@ library_group = [
         requires=["xz"],
         source_url="https://download.gnome.org/sources/libxml2/2.9/libxml2-2.9.13.tar.xz",
         build_arguments=["--without-python"],
-        when=When.community_only,
     ),
 ]
 
