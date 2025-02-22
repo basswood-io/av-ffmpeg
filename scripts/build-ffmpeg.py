@@ -367,7 +367,14 @@ def main():
         )
     else:
         ffmpeg_package.build_arguments.extend(
-            ["--enable-libopenh264", "--disable-libx264", "--enable-libfdk_aac"]
+            [
+                "--enable-libopenh264",
+                "--disable-libx264",
+                "--enable-libfdk_aac",
+                # Disable experimental encoders
+                "--disable-encoder=avui,dca,mlp,opus,s302m,sonic,sonic_ls,truehd,vorbis",
+                "--disable-decoder=sonic",
+            ]
         )
 
     if plat == "Darwin":
