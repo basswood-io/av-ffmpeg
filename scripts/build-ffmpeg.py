@@ -24,6 +24,7 @@ library_group = [
     Package(
         name="xz",
         source_url="https://github.com/tukaani-project/xz/releases/download/v5.6.3/xz-5.6.3.tar.xz",
+        sha256="db0590629b6f0fa36e74aea5f9731dc6f8df068ce7b7bafa45301832a5eebc3a",
         build_arguments=[
             "--disable-doc",
             "--disable-lzma-links",
@@ -83,8 +84,9 @@ gnutls_group = [
 codec_group = [
     Package(
         name="aom",
-        requires=["cmake"],
         source_url="https://storage.googleapis.com/aom-releases/libaom-3.11.0.tar.gz",
+        sha256="cf7d103d2798e512aca9c6e7353d7ebf8967ee96fffe9946e015bb9947903e3e",
+        requires=["cmake"],
         source_strip_components=1,
         build_system="cmake",
         build_arguments=[
@@ -97,47 +99,56 @@ codec_group = [
     ),
     Package(
         name="dav1d",
-        requires=["meson", "nasm", "ninja"],
         source_url="https://code.videolan.org/videolan/dav1d/-/archive/1.4.1/dav1d-1.4.1.tar.bz2",
+        sha256="ab02c6c72c69b2b24726251f028b7cb57d5b3659eeec9f67f6cecb2322b127d8",
+        requires=["meson", "nasm", "ninja"],
         build_system="meson",
     ),
     Package(
         name="libsvtav1",
         source_url="https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v2.2.1/SVT-AV1-v2.2.1.tar.gz",
+        sha256="d02b54685542de0236bce4be1b50912aba68aff997c43b350d84a518df0cf4e5",
         build_system="cmake",
     ),
     Package(
         name="lame",
         source_url="http://deb.debian.org/debian/pool/main/l/lame/lame_3.100.orig.tar.gz",
+        sha256="ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e",
     ),
     Package(
         name="ogg",
         source_url="http://downloads.xiph.org/releases/ogg/libogg-1.3.5.tar.gz",
+        sha256="0eb4b4b9420a0f51db142ba3f9c64b333f826532dc0f48c6410ae51f4799b664",
     ),
     Package(
         name="opus",
         source_url="https://github.com/xiph/opus/releases/download/v1.5.2/opus-1.5.2.tar.gz",
+        sha256="65c1d2f78b9f2fb20082c38cbe47c951ad5839345876e46941612ee87f9a7ce1",
         build_arguments=["--disable-doc", "--disable-extra-programs"],
     ),
     Package(
         name="speex",
         source_url="http://downloads.xiph.org/releases/speex/speex-1.2.1.tar.gz",
+        sha256="4b44d4f2b38a370a2d98a78329fefc56a0cf93d1c1be70029217baae6628feea",
         build_arguments=["--disable-binaries"],
     ),
     Package(
         name="twolame",
         source_url="http://deb.debian.org/debian/pool/main/t/twolame/twolame_0.4.0.orig.tar.gz",
+        sha256="cc35424f6019a88c6f52570b63e1baf50f62963a3eac52a03a800bb070d7c87d",
         build_arguments=["--disable-sndfile"],
     ),
     Package(
         name="vorbis",
-        requires=["ogg"],
         source_url="http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.gz",
+        sha256="0e982409a9c3fc82ee06e08205b1355e5c6aa4c36bca58146ef399621b0ce5ab",
+        requires=["ogg"],
     ),
     Package(
         name="vpx",
-        source_filename="vpx-1.14.0.tar.gz",
         source_url="https://github.com/webmproject/libvpx/archive/v1.14.0.tar.gz",
+        sha256="5f21d2db27071c8a46f1725928a10227ae45c5cd1cad3727e4aafbe476e321fa",
+        source_filename="vpx-1.14.0.tar.gz",
         build_arguments=[
             "--disable-examples",
             "--disable-tools",
@@ -147,13 +158,15 @@ codec_group = [
     Package(
         name="png",
         source_url="https://download.sourceforge.net/libpng/libpng-1.6.45.tar.gz",
+        sha256="7dee9e1ca8152bf52f919456f4190330aee48209887f2ec0b3d9f0ad571df11b",
         # avoid an assembler error on Windows
         build_arguments=["PNG_COPTS=-fno-asynchronous-unwind-tables"],
     ),
     Package(
         name="webp",
-        source_filename="webp-1.5.0.tar.gz",
         source_url="https://github.com/webmproject/libwebp/archive/refs/tags/v1.5.0.tar.gz",
+        sha256="668c9aba45565e24c27e17f7aaf7060a399f7f31dba6c97a044e1feacb930f37",
+        source_filename="webp-1.5.0.tar.gz",
         build_system="cmake",
         build_arguments=[
             "-DWEBP_BUILD_ANIM_UTILS=OFF",
@@ -169,15 +182,17 @@ codec_group = [
     ),
     Package(
         name="openh264",
-        requires=["meson", "nasm", "ninja"],
-        source_filename="openh264-2.5.0.tar.gz",
         source_url="https://github.com/cisco/openh264/archive/refs/tags/v2.5.0.tar.gz",
+        sha256="94c8ca364db990047ec4ec3481b04ce0d791e62561ef5601443011bdc00825e3",
+        source_filename="openh264-2.5.0.tar.gz",
+        requires=["meson", "nasm", "ninja"],
         build_system="meson",
         when=When.commercial_only,
     ),
     Package(
         name="fdk_aac",
         source_url="https://github.com/mstorsjo/fdk-aac/archive/refs/tags/v2.0.3.tar.gz",
+        sha256="e25671cd96b10bad896aa42ab91a695a9e573395262baed4e4a2ff178d6a3a78",
         when=When.commercial_only,
         build_system="cmake",
     ),
@@ -221,6 +236,7 @@ codec_group = [
 nvheaders = Package(
     name="nv-codec-headers",
     source_url="https://github.com/FFmpeg/nv-codec-headers/archive/refs/tags/n13.0.19.0.tar.gz",
+    sha256="86d15d1a7c0ac73a0eafdfc57bebfeba7da8264595bf531cf4d8db1c22940116",
     build_system="make",
 )
 
@@ -329,6 +345,7 @@ def main():
             Package(
                 name="gperf",
                 source_url="http://ftp.gnu.org/pub/gnu/gperf/gperf-3.1.tar.gz",
+                sha256="588546b945bba4b70b6a3a616e80b4ab466e3f33024a352fc2198112cdbb3ae2",
             )
         )
 
@@ -337,6 +354,7 @@ def main():
             Package(
                 name="nasm",
                 source_url="https://www.nasm.us/pub/nasm/releasebuilds/2.14.02/nasm-2.14.02.tar.bz2",
+                sha256="34fd26c70a277a9fdd54cb5ecf389badedaf48047b269d1008fbc819b24e80bc",
             )
         )
     download_tars(build_tools)
