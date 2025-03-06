@@ -39,13 +39,15 @@ library_group = [
     Package(
         name="gmp",
         source_url="https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.xz",
+        sha256="a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898",
         # out-of-tree builds fail on Windows
         build_dir=".",
     ),
     Package(
         name="xml2",
-        requires=["xz"],
         source_url="https://download.gnome.org/sources/libxml2/2.9/libxml2-2.9.13.tar.xz",
+        sha256="276130602d12fe484ecc03447ee5e759d0465558fbc9d6bd144e3745306ebf0e",
+        requires=["xz"],
         build_arguments=["--without-python"],
     ),
 ]
@@ -54,19 +56,22 @@ gnutls_group = [
     Package(
         name="unistring",
         source_url="https://ftp.gnu.org/gnu/libunistring/libunistring-1.2.tar.gz",
+        sha256="fd6d5662fa706487c48349a758b57bc149ce94ec6c30624ec9fdc473ceabbc8e",
     ),
     Package(
         name="nettle",
-        requires=["gmp"],
         source_url="https://ftp.gnu.org/gnu/nettle/nettle-3.9.1.tar.gz",
+        sha256="ccfeff981b0ca71bbd6fbcb054f407c60ffb644389a5be80d6716d5b550c6ce3",
+        requires=["gmp"],
         build_arguments=["--disable-documentation"],
         # build randomly fails with "*** missing separator.  Stop."
         build_parallel=False,
     ),
     Package(
         name="gnutls",
-        requires=["nettle", "unistring"],
         source_url="https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-3.8.1.tar.xz",
+        sha256="ba8b9e15ae20aba88f44661978f5b5863494316fe7e722ede9d069fe6294829c",
+        requires=["nettle", "unistring"],
         build_arguments=[
             "--disable-cxx",
             "--disable-doc",
@@ -106,8 +111,8 @@ codec_group = [
     ),
     Package(
         name="libsvtav1",
-        source_url="https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v2.2.1/SVT-AV1-v2.2.1.tar.gz",
-        sha256="d02b54685542de0236bce4be1b50912aba68aff997c43b350d84a518df0cf4e5",
+        source_url="https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v3.0.0/SVT-AV1-v3.0.0.tar.gz",
+        sha256="7c5c357388859d15ba2b9b139c24e17ad6b84b94ca9b281921a6f0b839e78ebc",
         build_system="cmake",
     ),
     Package(
@@ -264,12 +269,13 @@ def download_and_verify_package(package: Package) -> tuple[str, str]:
     if not os.path.exists(tarball):
         raise ValueError(f"tar bar doesn't exist: {tarball}")
 
+    sha = calculate_sha256(tarball)
     if package.sha256 is None:
-        print(f"sha256 for {package.name}: {calculate_sha256(tarball)}")
-    elif package.sha256 == calculate_sha256(tarball):
+        print(f"sha256 for {package.name}: {sha}")
+    elif package.sha256 == sha:
         print(f"{package.name} tarball: hashes match")
     else:
-        raise ValueError(f"sha256 hash of {package.name} tarball do not match!")
+        raise ValueError(f"sha256 hash of {package.name} tarball do not match! {sha}")
 
     return package.name, tarball
 
