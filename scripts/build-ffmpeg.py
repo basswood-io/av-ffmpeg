@@ -1,7 +1,8 @@
 import argparse
+import concurrent.futures
 import glob
-import os
 import hashlib
+import os
 import platform
 import shutil
 import subprocess
@@ -232,26 +233,44 @@ ffmpeg_package = Package(
 )
 
 
+def download_and_verify_package(package: Package) -> tuple[str, str]:
+    tarball = os.path.join(
+        os.path.abspath("source"),
+        package.source_filename or package.source_url.split("/")[-1],
+    )
+
+    if not os.path.exists(tarball):
+        try:
+            fetch(package.source_url, tarball)
+        except subprocess.CalledProcessError:
+            pass
+
+    if not os.path.exists(tarball):
+        raise ValueError(f"tar bar doesn't exist: {tarball}")
+
+    if package.sha256 is None:
+        print(f"sha256 for {package.name}: {calculate_sha256(tarball)}")
+    elif package.sha256 == calculate_sha256(tarball):
+        print(f"{package.name} tarball: hashes match")
+    else:
+        raise ValueError(f"sha256 hash of {package.name} tarball do not match!")
+
+    return package.name, tarball
+
+
 def download_tars(packages: list[Package]) -> None:
-    # Try to download all tars at the start.
-    # If there is an curl error, do nothing, then try again in `main()`
-    for package in packages:
-        tarball = os.path.join(
-            os.path.abspath("source"),
-            package.source_filename or package.source_url.split("/")[-1],
-        )
-        if not os.path.exists(tarball):
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_to_package = {
+            executor.submit(download_and_verify_package, package): package.name
+            for package in packages
+        }
+
+        for future in concurrent.futures.as_completed(future_to_package):
             try:
-                fetch(package.source_url, tarball)
-            except subprocess.CalledProcessError:
-                pass
-
-        if not os.path.exists(tarball):
-            raise ValueError(f"tar bar doesn't exist: {tarball}")
-
-        if package.sha256 is not None:
-            if package.sha256 != calculate_sha256(tarball):
-                raise ValueError(f"sha256 hash of tarball do not match.")
+                name, tarball = future.result()
+            except Exception as exc:
+                print(f"{name} generated an exception: {exc}")
+                raise
 
 
 def main():
