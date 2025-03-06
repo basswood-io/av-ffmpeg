@@ -41,16 +41,11 @@ def main():
         f"Currently FFmpeg {get_version(ffmpeg_package)} is built with the following packages enabled for all platforms:\n"
     )
 
-    allow_gpl = True
-
     for package in sorted(library_group):
-        if not package.gpl or allow_gpl:
+        if package.when in {When.always, When.commercial_only}:
             print(f"- {package.name} {get_version(package)}")
-
     for package in codec_group:
-        if package.name == "x264" and not allow_gpl:
-            print(f"- {openh264.name} {get_version(openh264)}")
-        elif not package.gpl or allow_gpl:
+        if package.when in {When.always, When.commercial_only}:
             print(f"- {package.name} {get_version(package)}")
 
     print("\nThe following additional packages are also enabled on Linux:\n")
