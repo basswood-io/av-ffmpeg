@@ -1,6 +1,7 @@
 import argparse
 import glob
 import os
+import hashlib
 import platform
 import shutil
 import subprocess
@@ -8,6 +9,15 @@ import subprocess
 from cibuildpkg import Builder, Package, When, fetch, get_platform, log_group, run
 
 plat = platform.system()
+
+
+def calculate_sha256(filename: str) -> str:
+    sha256_hash = hashlib.sha256()
+    with open(filename, "rb") as f:
+        for byte_block in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(byte_block)
+    return sha256_hash.hexdigest()
+
 
 library_group = [
     Package(
@@ -215,28 +225,17 @@ nvheaders = Package(
 
 ffmpeg_package = Package(
     name="ffmpeg",
-    source_url="https://ffmpeg.org/releases/ffmpeg-7.1.tar.xz",
+    source_url="https://ffmpeg.org/releases/ffmpeg-7.1.1.tar.xz",
+    sha256="733984395e0dbbe5c046abda2dc49a5544e7e0e1e2366bba849222ae9e3a03b1",
     build_arguments=[],
     build_parallel=plat != "Windows",
 )
 
 
-def download_tars(use_gnutls: bool, community: bool) -> None:
+def download_tars(packages: list[Package]) -> None:
     # Try to download all tars at the start.
     # If there is an curl error, do nothing, then try again in `main()`
-
-    local_libs = library_group
-    if use_gnutls:
-        local_libs += gnutls_group
-
-    for package in local_libs + codec_group:
-        if package.when == When.never:
-            continue
-        if package.when == When.community_only and not community:
-            continue
-        if package.when == When.commercial_only and community:
-            continue
-
+    for package in packages:
         tarball = os.path.join(
             os.path.abspath("source"),
             package.source_filename or package.source_url.split("/")[-1],
@@ -246,6 +245,13 @@ def download_tars(use_gnutls: bool, community: bool) -> None:
                 fetch(package.source_url, tarball)
             except subprocess.CalledProcessError:
                 pass
+
+        if not os.path.exists(tarball):
+            raise ValueError(f"tar bar doesn't exist: {tarball}")
+
+        if package.sha256 is not None:
+            if package.sha256 != calculate_sha256(tarball):
+                raise ValueError(f"sha256 hash of tarball do not match.")
 
 
 def main():
@@ -284,8 +290,6 @@ def main():
     builder = Builder(dest_dir=dest_dir)
     builder.create_directories()
 
-    download_tars(use_gnutls, community)
-
     # install packages
     available_tools = set()
     if plat == "Windows":
@@ -300,23 +304,25 @@ def main():
         run(["pip", "install", "cmake", "meson", "ninja"])
 
     # build tools
+    build_tools = []
     if "gperf" not in available_tools:
-        builder.build(
+        build_tools.append(
             Package(
                 name="gperf",
                 source_url="http://ftp.gnu.org/pub/gnu/gperf/gperf-3.1.tar.gz",
-            ),
-            for_builder=True,
+            )
         )
 
     if "nasm" not in available_tools:
-        builder.build(
+        build_tools.append(
             Package(
                 name="nasm",
                 source_url="https://www.nasm.us/pub/nasm/releasebuilds/2.14.02/nasm-2.14.02.tar.bz2",
-            ),
-            for_builder=True,
+            )
         )
+    download_tars(build_tools)
+    for tool in build_tools:
+        builder.build(tool, for_builder=True)
 
     ffmpeg_package.build_arguments = [
         "--disable-alsa",
@@ -390,6 +396,8 @@ def main():
     package_groups = [library_group + codec_group, [ffmpeg_package]]
     packages = [p for p_list in package_groups for p in p_list]
 
+    filtered_packages = []
+
     for package in packages:
         if package.when == When.never:
             continue
@@ -398,6 +406,10 @@ def main():
         if package.when == When.commercial_only and community:
             continue
 
+        filtered_packages.append(package)
+
+    download_tars(filtered_packages)
+    for package in filtered_packages:
         builder.build(package)
 
     if plat == "Windows":

@@ -125,6 +125,7 @@ class When(IntEnum):
 class Package:
     name: str
     source_url: str
+    sha256: str | None = None
     build_system: str = "autoconf"
     build_arguments: list[str] = field(default_factory=list)
     build_dir: str = "build"
@@ -424,9 +425,8 @@ class Builder:
             package.source_filename or package.source_url.split("/")[-1],
         )
 
-        # download tarball
         if not os.path.exists(tarball):
-            fetch(package.source_url, tarball)
+            raise RuntimeError(f"Missing tarbar: {tarball}")
 
         with tarfile.open(tarball) as tar:
             # determine common prefix to strip
