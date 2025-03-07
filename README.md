@@ -1,19 +1,13 @@
-pyav-ffmpeg
-===========
+# av-ffmpeg
 
-This project provides binary builds of FFmpeg and its dependencies for `PyAV`_.
-These builds are used in order to provide binary wheels of PyAV, allowing
-users to easily install PyAV without perform error-prone compilations.
+This project provides binary builds of FFmpeg and its dependencies for Cython projects. These builds are used in order to provide binary wheels, allowing users to easily install software without perform error-prone compilations.
 
 The builds are provided for several platforms:
+ - Linux (x86\_64, i686, aarch64)
+ - macOS (x86\_64, arm64)
+ - Windows (AMD64)
 
-- Linux (x86_64, i686, aarch64)
-- macOS (x86_64, arm64)
-- Windows (AMD64)
-
-Features
---------
-
+## Features
 Currently FFmpeg 7.1.1 is built with the following packages enabled for all platforms:
 
 - gmp 6.3.0
@@ -32,7 +26,7 @@ Currently FFmpeg 7.1.1 is built with the following packages enabled for all plat
 - png 1.6.45
 - webp 1.5.0
 - openh264 2.5.0
-- fdk_aac 2.0.3
+- fdk\_aac 2.0.3
 
 The following additional packages are also enabled on Linux:
 
@@ -40,4 +34,3 @@ The following additional packages are also enabled on Linux:
 - nettle 3.9.1
 - unistring 1.2
 
-.. _PyAV: https://github.com/PyAV-Org/PyAV
