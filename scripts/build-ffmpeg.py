@@ -145,8 +145,8 @@ codec_group = [
     ),
     Package(
         name="vorbis",
-        source_url="http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.gz",
-        sha256="0e982409a9c3fc82ee06e08205b1355e5c6aa4c36bca58146ef399621b0ce5ab",
+        source_url="https://ftp.osuosl.org/pub/xiph/releases/vorbis/libvorbis-1.3.7.tar.xz",
+        sha256="b33cc4934322bcbf6efcbacf49e3ca01aadbea4114ec9589d1b1e9d20f72954b",
         requires=["ogg"],
     ),
     Package(
@@ -275,7 +275,9 @@ def download_and_verify_package(package: Package) -> tuple[str, str]:
     elif package.sha256 == sha:
         print(f"{package.name} tarball: hashes match")
     else:
-        raise ValueError(f"sha256 hash of {package.name} tarball do not match! {sha}")
+        raise ValueError(
+            f"sha256 hash of {package.name} tarball do not match!\nExpected: {package.sha}\nGot: {sha}"
+        )
 
     return package.name, tarball
 
@@ -355,7 +357,7 @@ def main():
             )
         )
 
-    if "nasm" not in available_tools:
+    if "nasm" not in available_tools and platform.machine() not in {"arm64", "aarch64"}:
         build_tools.append(
             Package(
                 name="nasm",
@@ -363,9 +365,6 @@ def main():
                 sha256="34fd26c70a277a9fdd54cb5ecf389badedaf48047b269d1008fbc819b24e80bc",
             )
         )
-    download_tars(build_tools)
-    for tool in build_tools:
-        builder.build(tool, for_builder=True)
 
     ffmpeg_package.build_arguments = [
         "--disable-alsa",
@@ -451,7 +450,9 @@ def main():
 
         filtered_packages.append(package)
 
-    download_tars(filtered_packages)
+    download_tars(build_tools + filtered_packages)
+    for tool in build_tools:
+        builder.build(tool, for_builder=True)
     for package in filtered_packages:
         builder.build(package)
 
