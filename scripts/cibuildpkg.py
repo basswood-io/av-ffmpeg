@@ -90,7 +90,6 @@ def prepend_env(env, name: str, new: str, separator: str = " ") -> None:
 
 
 def run(cmd: list[str], env=None) -> None:
-    print(f"- Running: {cmd}", flush=True)
     try:
         subprocess.run(cmd, check=True, env=env, stderr=subprocess.PIPE, text=True)
     except subprocess.CalledProcessError as e:

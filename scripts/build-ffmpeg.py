@@ -111,8 +111,8 @@ codec_group = [
     ),
     Package(
         name="libsvtav1",
-        source_url="https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v3.0.0/SVT-AV1-v3.0.0.tar.gz",
-        sha256="7c5c357388859d15ba2b9b139c24e17ad6b84b94ca9b281921a6f0b839e78ebc",
+        source_url="https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v3.0.1/SVT-AV1-v3.0.1.tar.bz2",
+        sha256="f1d1ad8db551cd84ab52ae579b0e5086d8a0b7e47aea440e75907242a51b4cb9",
         build_system="cmake",
     ),
     Package(
