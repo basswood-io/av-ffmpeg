@@ -415,20 +415,26 @@ def main():
         )
     else:
         ffmpeg_package.build_arguments.extend(
-            [
-                "--enable-libopenh264",
-                "--disable-libx264",
-                "--enable-libfdk_aac",
-                # Disable experimental encoders
-                "--disable-encoder=avui,dca,mlp,opus,s302m,sonic,sonic_ls,truehd,vorbis",
-                "--disable-decoder=sonic",
-            ]
+            ["--enable-libopenh264", "--disable-libx264", "--enable-libfdk_aac"]
         )
 
     if plat == "Darwin":
         ffmpeg_package.build_arguments.extend(
-            ["--enable-videotoolbox", "--extra-ldflags=-Wl,-ld_classic"]
+            [
+                "--enable-videotoolbox",
+                "--enable-audiotoolbox",
+                "--extra-ldflags=-Wl,-ld_classic",
+            ]
         )
+
+    ffmpeg_package.build_arguments.extend(
+        [
+            "--disable-encoder=avui,dca,mlp,opus,s302m,sonic,sonic_ls,truehd,vorbis",
+            "--disable-decoder=sonic",
+            "--disable-libjack",
+            "--disable-indev=jack",
+        ]
+    )
 
     if use_gnutls:
         library_group += gnutls_group
