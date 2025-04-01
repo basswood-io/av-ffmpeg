@@ -217,8 +217,8 @@ codec_group = [
     ),
     Package(
         name="x265",
-        requires=["cmake"],
-        source_url="https://bitbucket.org/multicoreware/x265_git/downloads/x265_3.5.tar.gz",
+        source_url="https://bitbucket.org/multicoreware/x265_git/downloads/x265_4.1.tar.gz",
+        sha256="a31699c6a89806b74b0151e5e6a7df65de4b49050482fe5ebf8a4379d7af8f29",
         build_system="cmake",
         source_dir="source",
         when=When.community_only,
