@@ -48,13 +48,13 @@ jobs:
           python-version: "3.13"
       - name: Set deployment target
         if: matrix.os == 'macos-13' || matrix.os == 'macos-14'
-        run: echo "MACOSX_DEPLOYMENT_TARGET=12.0" >> $GITHUB_ENV
+        run: echo "MACOSX_DEPLOYMENT_TARGET=13.0" >> $GITHUB_ENV
       - name: Install packages for macOS
         if: matrix.os == 'macos-13' || matrix.os == 'macos-14'
         run: |
           brew update
           brew unlink gettext libidn2 libpng libtiff libunistring libx11 libxau libxcb libxdmcp little-cms2 unbound
-      - uses: msys2/setup-msys2@c52d1fa9c7492275e60fe763540fb601f5f232a1
+      - uses: msys2/setup-msys2@v2
         if: matrix.os == 'windows-latest'
         with:
           install: base-devel mingw-w64-x86_64-gcc mingw-w64-x86_64-gperf mingw-w64-x86_64-nasm openssl-devel
