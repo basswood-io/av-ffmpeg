@@ -25,16 +25,17 @@ def get_platform() -> str:
     system = platform.system()
     machine = platform.machine()
     if system == "Linux":
-        return f"manylinux_{machine}"
-    elif system == "Darwin":
+        if platform.libc_ver()[0] == "glibc":
+            return f"manylinux_{machine}"
+        return f"musllinux_{machine}"
+    if system == "Darwin":
         return f"macosx_{machine}"
-    elif system == "Windows":
+    if system == "Windows":
         if struct.calcsize("P") * 8 == 64:
             return "win_amd64"
-        else:
-            return "win32"
-    else:
-        raise Exception(f"Unsupported system {system}")
+        return "win32"
+
+    raise Exception(f"Unsupported system {system}")
 
 
 @contextlib.contextmanager
@@ -310,7 +311,10 @@ class Builder:
             cmake_args.append("-DCMAKE_INSTALL_NAME_DIR=" + os.path.join(prefix, "lib"))
 
         if package.name == "srt" and platform.system() == "Linux":
-            run(["yum", "-y", "install", "openssl-devel"])
+            if platform.libc_ver()[0] == "glibc":
+                run(["yum", "-y", "install", "openssl-devel"])
+            else:
+                run(["apk", "add", "openssl-dev"])
 
         # build package
         os.makedirs(package_build_path, exist_ok=True)
