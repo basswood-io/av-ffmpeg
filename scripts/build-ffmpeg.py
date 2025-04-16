@@ -215,7 +215,6 @@ codec_group = [
         build_arguments=["--disable-asm"] if is_musllinux else [],
         # parallel build runs out of memory on Windows
         build_parallel=plat != "Windows",
-        when=When.community_only,
     ),
     Package(
         name="x265",
@@ -417,7 +416,7 @@ def main():
         )
     else:
         ffmpeg_package.build_arguments.extend(
-            ["--enable-libopenh264", "--disable-libx264", "--enable-libfdk_aac"]
+            ["--enable-libopenh264", "--enable-libx264", "--enable-libfdk_aac"]
         )
 
     if plat == "Darwin":
