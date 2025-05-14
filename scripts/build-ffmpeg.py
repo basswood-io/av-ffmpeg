@@ -53,6 +53,9 @@ library_group = [
     ),
 ]
 
+if plat == "Windows":
+    del library_group[1]
+
 gnutls_group = [
     Package(
         name="unistring",
@@ -152,9 +155,9 @@ codec_group = [
     ),
     Package(
         name="vpx",
-        source_url="https://github.com/webmproject/libvpx/archive/v1.14.0.tar.gz",
-        sha256="5f21d2db27071c8a46f1725928a10227ae45c5cd1cad3727e4aafbe476e321fa",
-        source_filename="vpx-1.14.0.tar.gz",
+        source_url="https://github.com/webmproject/libvpx/archive/v1.14.1.tar.gz",
+        sha256="901747254d80a7937c933d03bd7c5d41e8e6c883e0665fadcb172542167c7977",
+        source_filename="vpx-1.14.1.tar.gz",
         build_arguments=[
             "--disable-examples",
             "--disable-tools",
@@ -277,7 +280,7 @@ def download_and_verify_package(package: Package) -> tuple[str, str]:
         print(f"{package.name} tarball: hashes match")
     else:
         raise ValueError(
-            f"sha256 hash of {package.name} tarball do not match!\nExpected: {package.sha}\nGot: {sha}"
+            f"sha256 hash of {package.name} tarball do not match!\nExpected: {package.sha256}\nGot: {sha}"
         )
 
     return package.name, tarball
