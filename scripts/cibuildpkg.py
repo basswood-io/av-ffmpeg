@@ -265,6 +265,9 @@ class Builder:
             elif platform.system() == "Windows":
                 configure_args += ["--target=x86_64-win64-gcc"]
 
+        if platform.system() == "Windows":
+            prepend_env(env, "CFLAGS", "-Wno-incompatible-pointer-types")
+
         if package.name == "ffmpeg" and platform.system() == "Windows":
             correct_configure(os.path.join(package_source_path, "configure"))
             prepend_env(env, "LDFLAGS", "-LC:/PROGRA~1/OpenSSL/lib")
