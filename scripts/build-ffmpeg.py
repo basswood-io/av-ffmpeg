@@ -219,11 +219,10 @@ codec_group = [
     ),
     Package(
         name="x265",
-        source_url="https://bitbucket.org/multicoreware/x265_git/downloads/x265_4.1.tar.gz",
-        sha256="a31699c6a89806b74b0151e5e6a7df65de4b49050482fe5ebf8a4379d7af8f29",
+        source_url="https://bitbucket.org/multicoreware/x265_git/downloads/x265_3.5.tar.gz",
+        sha256="e70a3335cacacbba0b3a20ec6fecd6783932288ebc8163ad74bcc9606477cae8",
         build_system="cmake",
         source_dir="source",
-        when=When.never,
     ),
     Package(
         name="srt",
@@ -340,7 +339,7 @@ def main():
             run(["where", tool])
 
     with log_group("install python packages"):
-        run(["pip", "install", "cmake", "meson", "ninja"])
+        run(["pip", "install", "cmake==3.31.6", "meson", "ninja"])
 
     # build tools
     build_tools = []

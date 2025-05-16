@@ -31,22 +31,24 @@ index 79b28eb4df54681a43bd4e8164784df84378e386..43fe531fde74dc058b63002cd704df5e
 
 
 diff --git a/configure b/configure
-index aad87da507..892c973f7b 100755
+index 0609dac4ab..aa65218e15 100755
 --- a/configure
 +++ b/configure
-@@ -1869,7 +1869,6 @@ EXTERNAL_LIBRARY_GPL_LIST="
+@@ -1884,8 +1884,6 @@ EXTERNAL_LIBRARY_GPL_LIST="
      libdvdread
      librubberband
      libvidstab
 -    libx264
-     libx265
+-    libx265
      libxavs
      libxavs2
-@@ -1902,6 +1901,7 @@ EXTERNAL_LIBRARY_LIST="
+     libxvid
+@@ -1917,6 +1915,8 @@ EXTERNAL_LIBRARY_LIST="
      $EXTERNAL_LIBRARY_NONFREE_LIST
      $EXTERNAL_LIBRARY_VERSION3_LIST
      $EXTERNAL_LIBRARY_GPLV3_LIST
 +    libx264
++    libx265
      chromaprint
      gcrypt
      gnutls
