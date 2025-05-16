@@ -42,10 +42,10 @@ def main():
     )
 
     for package in sorted(library_group):
-        if package.when in {When.always, When.commercial_only}:
+        if package.when == When.always:
             print(f"- {package.name} {get_version(package)}")
     for package in codec_group:
-        if package.when in {When.always, When.commercial_only}:
+        if package.when == When.always:
             print(f"- {package.name} {get_version(package)}")
 
     print("\nThe following additional packages are also enabled on Linux:\n")

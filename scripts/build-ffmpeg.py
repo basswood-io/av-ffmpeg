@@ -196,13 +196,11 @@ codec_group = [
         source_filename="openh264-2.6.0.tar.gz",
         requires=["meson", "ninja"],
         build_system="meson",
-        when=When.commercial_only,
     ),
     Package(
         name="fdk_aac",
         source_url="https://github.com/mstorsjo/fdk-aac/archive/refs/tags/v2.0.3.tar.gz",
         sha256="e25671cd96b10bad896aa42ab91a695a9e573395262baed4e4a2ff178d6a3a78",
-        when=When.commercial_only,
         build_system="cmake",
     ),
     Package(
@@ -210,7 +208,7 @@ codec_group = [
         source_url="http://deb.debian.org/debian/pool/main/o/opencore-amr/opencore-amr_0.1.5.orig.tar.gz",
         # parallel build hangs on Windows
         build_parallel=plat != "Windows",
-        when=When.community_only,
+        when=When.never,
     ),
     Package(
         name="x264",
@@ -225,7 +223,7 @@ codec_group = [
         sha256="a31699c6a89806b74b0151e5e6a7df65de4b49050482fe5ebf8a4379d7af8f29",
         build_system="cmake",
         source_dir="source",
-        when=When.community_only,
+        when=When.never,
     ),
     Package(
         name="srt",
@@ -238,7 +236,7 @@ codec_group = [
             if plat == "Darwin"
             else [""]
         ),
-        when=When.community_only,
+        when=When.never,
     ),
 ]
 
@@ -306,19 +304,13 @@ def main():
 
     parser = argparse.ArgumentParser("build-ffmpeg")
     parser.add_argument("destination")
-    parser.add_argument("--community", action="store_true")
-    parser.add_argument("--commercial", action="store_true")
     parser.add_argument(
         "--enable-cuda", action="store_true", help="Enable NVIDIA CUDA support"
     )
 
     args = parser.parse_args()
 
-    if args.community and args.commercial:
-        raise ValueError("mutually exclusive")
-
     dest_dir = args.destination
-    community = args.community
     enable_cuda = args.enable_cuda and plat in {"Linux", "Windows"}
     del args
 
@@ -388,18 +380,18 @@ def main():
         "--enable-libaom",
         "--enable-libdav1d",
         "--enable-libmp3lame",
-        "--enable-libopencore-amrnb" if community else "--disable-libopencore-amrnb",
-        "--enable-libopencore-amrwb" if community else "--disable-libopencore-amrwb",
+        "--enable-libopencore-amrnb" if False else "--disable-libopencore-amrnb",
+        "--enable-libopencore-amrwb" if False else "--disable-libopencore-amrwb",
         "--enable-libopus",
         "--enable-libspeex",
         "--enable-libsvtav1",
-        "--enable-libsrt" if community else "--disable-libsrt",
+        "--enable-libsrt" if False else "--disable-libsrt",
         "--enable-libtwolame",
         "--enable-libvorbis",
         "--enable-libvpx",
         "--enable-libwebp",
         "--enable-libxcb" if plat == "Linux" else "--disable-libxcb",
-        "--enable-libxml2" if community else "--disable-libxml2",
+        "--enable-libxml2",
         "--enable-lzma",
         "--enable-zlib",
         "--enable-version3",
@@ -408,19 +400,9 @@ def main():
     if enable_cuda:
         ffmpeg_package.build_arguments.extend(["--enable-nvenc", "--enable-nvdec"])
 
-    if community:
-        ffmpeg_package.build_arguments.extend(
-            [
-                "--enable-libx264",
-                "--disable-libopenh264",
-                "--enable-libx265",
-                "--enable-gpl",
-            ]
-        )
-    else:
-        ffmpeg_package.build_arguments.extend(
-            ["--enable-libopenh264", "--enable-libx264", "--enable-libfdk_aac"]
-        )
+    ffmpeg_package.build_arguments.extend(
+        ["--enable-libopenh264", "--enable-libx264", "--enable-libfdk_aac"]
+    )
 
     if plat == "Darwin":
         ffmpeg_package.build_arguments.extend(
@@ -452,10 +434,6 @@ def main():
 
     for package in packages:
         if package.when == When.never:
-            continue
-        if package.when == When.community_only and not community:
-            continue
-        if package.when == When.commercial_only and community:
             continue
 
         filtered_packages.append(package)

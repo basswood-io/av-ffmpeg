@@ -116,8 +116,6 @@ def correct_configure(file_path: str) -> None:
 
 class When(IntEnum):
     never = 0
-    community_only = 1
-    commercial_only = 2
     always = 3
 
 
