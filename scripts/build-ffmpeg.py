@@ -155,9 +155,9 @@ codec_group = [
     ),
     Package(
         name="vpx",
-        source_url="https://github.com/webmproject/libvpx/archive/v1.14.1.tar.gz",
-        sha256="901747254d80a7937c933d03bd7c5d41e8e6c883e0665fadcb172542167c7977",
-        source_filename="vpx-1.14.1.tar.gz",
+        source_url="https://github.com/webmproject/libvpx/archive/v1.15.1.tar.gz",
+        sha256="6cba661b22a552bad729bd2b52df5f0d57d14b9789219d46d38f73c821d3a990",
+        source_filename="vpx-1.15.1.tar.gz",
         build_arguments=[
             "--disable-examples",
             "--disable-tools",
