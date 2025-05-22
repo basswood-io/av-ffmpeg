@@ -391,6 +391,10 @@ def main():
         "--enable-libwebp",
         "--enable-libxcb" if plat == "Linux" else "--disable-libxcb",
         "--enable-libxml2",
+        "--enable-libopenh264",
+        "--enable-libfdk_aac",
+        "--enable-libx264",
+        "--enable-libx265",
         "--enable-lzma",
         "--enable-zlib",
         "--enable-version3",
@@ -398,10 +402,6 @@ def main():
 
     if enable_cuda:
         ffmpeg_package.build_arguments.extend(["--enable-nvenc", "--enable-nvdec"])
-
-    ffmpeg_package.build_arguments.extend(
-        ["--enable-libopenh264", "--enable-libx264", "--enable-libfdk_aac"]
-    )
 
     if plat == "Darwin":
         ffmpeg_package.build_arguments.extend(
